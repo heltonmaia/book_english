@@ -877,6 +877,7 @@ export type StoredCard = {
   difficulty: number
   elapsedDays: number
   scheduledDays: number
+  learningSteps: number
   reps: number
   lapses: number
   state: number
@@ -886,7 +887,9 @@ export type StoredCard = {
 
 const scheduler = fsrs(generatorParameters({ enable_fuzz: false }))
 
-const RATING: Record<Grade, Rating> = {
+// ts-fsrs's next() takes Grade = Exclude<Rating, Rating.Manual>; typing the
+// record that way keeps the call cast-free.
+const RATING: Record<Grade, Exclude<Rating, Rating.Manual>> = {
   again: Rating.Again,
   hard: Rating.Hard,
   good: Rating.Good,
@@ -901,6 +904,7 @@ function toStored(card: Card, itemId: ItemId, introducedAt: number): StoredCard 
     difficulty: card.difficulty,
     elapsedDays: card.elapsed_days,
     scheduledDays: card.scheduled_days,
+    learningSteps: card.learning_steps,
     reps: card.reps,
     lapses: card.lapses,
     state: card.state,
@@ -915,6 +919,7 @@ function toFsrs(c: StoredCard): Card {
     difficulty: c.difficulty,
     elapsed_days: c.elapsedDays,
     scheduled_days: c.scheduledDays,
+    learning_steps: c.learningSteps,
     reps: c.reps,
     lapses: c.lapses,
     state: c.state,
@@ -1345,7 +1350,7 @@ export type ProgressFile = {
 
 const NUMERIC_FIELDS = [
   'due', 'stability', 'difficulty', 'elapsedDays', 'scheduledDays',
-  'reps', 'lapses', 'state', 'introducedAt',
+  'learningSteps', 'reps', 'lapses', 'state', 'introducedAt',
 ] as const
 
 export function serializeProgress(
