@@ -18,7 +18,7 @@ export const PART_TITLES: Record<PartId, string> = {
   'confusables': 'Confusables and False Friends',
 }
 
-// Cresce conforme as partes forem escritas. Fase 1 cobre só a Parte 1.
+// Grows as parts are written. Phase 1 covers only Part 1.
 export const PHENOMENA = [
   'zero-article', 'definite-article', 'indefinite-article', 'generic-reference',
   'uncountable-nouns', 'quantifiers', 'noun-noun-modifiers', 'np-agreement',

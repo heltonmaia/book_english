@@ -10,15 +10,15 @@ test('corpus is not empty', () => {
 test('unit ids and slugs are unique', () => {
   const ids = UNITS.map((u) => u.id)
   const slugs = UNITS.map((u) => u.slug)
-  expect(new Set(ids).size).toBe(ids.length)
-  expect(new Set(slugs).size).toBe(slugs.length)
+  expect(ids.filter((id, n) => ids.indexOf(id) !== n), 'duplicate unit ids').toEqual([])
+  expect(slugs.filter((s, n) => slugs.indexOf(s) !== n), 'duplicate unit slugs').toEqual([])
 })
 
 test('every unit declares a known part and at least one block and item', () => {
   for (const u of UNITS) {
-    expect(PART_IDS).toContain(u.part)
-    expect(u.blocks.length).toBeGreaterThan(0)
-    expect(u.items.length).toBeGreaterThan(0)
+    expect(PART_IDS, `unknown part on unit ${u.id}`).toContain(u.part)
+    expect(u.blocks.length, `unit ${u.id} has no blocks`).toBeGreaterThan(0)
+    expect(u.items.length, `unit ${u.id} has no items`).toBeGreaterThan(0)
   }
 })
 
@@ -54,8 +54,8 @@ test('choice items have in-range correct index and at least two options', () => 
   for (const i of allItems()) {
     if (i.kind !== 'choice') continue
     expect(i.options.length, `too few options on ${i.id}`).toBeGreaterThanOrEqual(2)
-    expect(i.correct, `correct out of range on ${i.id}`).toBeGreaterThanOrEqual(0)
-    expect(i.correct).toBeLessThan(i.options.length)
+    expect(i.correct, `negative correct index on ${i.id}`).toBeGreaterThanOrEqual(0)
+    expect(i.correct, `correct index out of range on ${i.id}`).toBeLessThan(i.options.length)
   }
 })
 
@@ -63,9 +63,9 @@ test('errorHunt spans fall inside the text', () => {
   for (const i of allItems()) {
     if (i.kind !== 'errorHunt') continue
     const [a, b] = i.span
-    expect(a, `bad span on ${i.id}`).toBeGreaterThanOrEqual(0)
-    expect(b, `bad span on ${i.id}`).toBeGreaterThan(a)
-    expect(b).toBeLessThanOrEqual(i.text.length)
+    expect(a, `negative span start on ${i.id}`).toBeGreaterThanOrEqual(0)
+    expect(b, `empty or inverted span on ${i.id}`).toBeGreaterThan(a)
+    expect(b, `span runs past the text on ${i.id}`).toBeLessThanOrEqual(i.text.length)
   }
 })
 
