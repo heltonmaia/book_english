@@ -32,7 +32,7 @@ book_english/
 ├── .github/workflows/deploy.yml       # build + publish no GitHub Pages
 ├── index.html
 ├── package.json
-├── tsconfig.json  tsconfig.node.json
+├── tsconfig.json
 ├── vite.config.ts                     # base, plugins, PWA, config do Vitest
 ├── src/
 │   ├── main.tsx                       # bootstrap React + router
@@ -72,7 +72,7 @@ Cada arquivo de `engine/` tem um `*.test.ts` colocado ao lado. Componentes com `
 Deploy vem **primeiro**, com um app trivial, porque o risco de `base` errado é conhecido e barato de descobrir agora e caro de descobrir na task 15.
 
 **Files:**
-- Create: `package.json`, `tsconfig.json`, `tsconfig.node.json`, `vite.config.ts`, `index.html`, `.gitignore`
+- Create: `package.json`, `tsconfig.json`, `vite.config.ts`, `index.html`, `.gitignore`
 - Create: `src/main.tsx`, `src/App.tsx`, `src/index.css`, `src/theme/tokens.css`
 - Create: `src/App.test.tsx`
 - Create: `.github/workflows/deploy.yml`
@@ -91,9 +91,9 @@ npm i react react-dom react-router-dom zustand ts-fsrs idb @fontsource-variable/
 npm i -D vite @vitejs/plugin-react typescript @types/react @types/react-dom \
         tailwindcss @tailwindcss/vite vite-plugin-pwa \
         vitest jsdom @testing-library/react @testing-library/user-event @testing-library/jest-dom
-npm pkg set scripts.dev="vite" scripts.build="tsc -b && vite build" \
+npm pkg set scripts.dev="vite" scripts.build="tsc --noEmit && vite build" \
             scripts.preview="vite preview" scripts.test="vitest run" \
-            scripts.test:watch="vitest" scripts.typecheck="tsc -b --noEmit"
+            scripts.test:watch="vitest" scripts.typecheck="tsc --noEmit"
 ```
 
 - [ ] **Step 2: Criar `vite.config.ts`**
@@ -116,7 +116,9 @@ export default defineConfig({
 })
 ```
 
-- [ ] **Step 3: Criar `src/test-setup.ts`, `tsconfig.json` e `tsconfig.node.json`**
+Note que o build usa `tsc --noEmit`, **não** `tsc -b`. Modo build exige projetos `composite` e conflita com `noEmit` em várias versões do TypeScript; aqui há um único projeto e não há nada a emitir — quem gera o bundle é o Vite.
+
+- [ ] **Step 3: Criar `src/test-setup.ts` e `tsconfig.json`**
 
 ```ts
 // src/test-setup.ts
@@ -138,17 +140,7 @@ import '@testing-library/jest-dom/vitest'
 }
 ```
 
-```json
-// tsconfig.node.json
-{
-  "compilerOptions": {
-    "target": "ES2022", "module": "ESNext", "moduleResolution": "bundler",
-    "strict": true, "noEmit": true, "skipLibCheck": true,
-    "types": ["node"]
-  },
-  "include": ["vite.config.ts"]
-}
-```
+`vite.config.ts` fica fora de `include` de propósito: ele não é typechecked pelo `tsc` do projeto, e o Vite o carrega com o próprio loader. Um `tsconfig.node.json` separado só para ele seria configuração morta.
 
 - [ ] **Step 4: Criar `index.html`, tokens de tema e o shell mínimo**
 
