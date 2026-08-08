@@ -709,6 +709,9 @@ describe('normalizeAnswer', () => {
   test('strips a single trailing period', () => {
     expect(normalizeAnswer('Networks are trained.')).toBe('networks are trained')
   })
+  test('strips whitespace left behind by a stripped trailing period', () => {
+    expect(normalizeAnswer('evidence .')).toBe('evidence')
+  })
 })
 
 describe('checkAnswer', () => {
@@ -758,6 +761,7 @@ export function normalizeAnswer(raw: string): string {
     .replace(/[“”]/g, '"')
     .trim()
     .replace(/\.$/, '')
+    .trim() // a stripped period can leave edge whitespace behind ("evidence .")
     .replace(/\s+/g, ' ')
     .toLowerCase()
 }
@@ -771,7 +775,7 @@ export function checkAnswer(raw: string, accepted: string[]): boolean {
 - [ ] **Step 3: Rodar os testes e verificar que passam**
 
 Rode: `npm test -- src/engine/answer.test.ts`
-Esperado: PASS, 11 testes.
+Esperado: PASS, 13 testes.
 
 - [ ] **Step 4: Commit**
 
