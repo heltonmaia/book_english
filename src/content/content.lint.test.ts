@@ -35,6 +35,19 @@ test('every item has a non-empty why and a known phenomenon', () => {
   }
 })
 
+// A unit's declared `phenomena` must cover what its items actually test.
+// Nothing else catches an incomplete list: the check above only validates each
+// item against the GLOBAL taxonomy, never against its own unit's declaration.
+// The Progress screen groups accuracy by phenomenon, so a unit that under-declares
+// silently drops itself out of its own statistics.
+test('every unit declares the phenomena its items test', () => {
+  for (const u of UNITS) {
+    const tested = [...new Set(u.items.map((i) => i.phenomenon))]
+    const undeclared = tested.filter((p) => !u.phenomena.includes(p))
+    expect(undeclared, `unit ${u.id} tests phenomena it does not declare`).toEqual([])
+  }
+})
+
 test('gap items have exactly one blank and at least one accepted answer', () => {
   for (const i of allItems()) {
     if (i.kind !== 'gap') continue

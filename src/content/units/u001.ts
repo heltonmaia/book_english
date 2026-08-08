@@ -6,7 +6,7 @@ export const u001: Unit = {
   title: 'Zero article with generic plurals',
   part: 'noun-phrase',
   level: 'review',
-  phenomena: ['zero-article', 'generic-reference'],
+  phenomena: ['zero-article', 'generic-reference', 'definite-article', 'uncountable-nouns'],
   blocks: [
     {
       label: 'A',
@@ -31,7 +31,7 @@ export const u001: Unit = {
       heading: 'When "the" is correct after all',
       body: [
         { kind: 'p', text: 'Use "the" when the reference is specific: identified by context, by a modifier, or because it was mentioned before.' },
-        { kind: 'example', good: 'The networks we trained in Section 3 converged quickly.', note: 'A relative clause makes the reference specific.' },
+        { kind: 'example', good: 'The networks we trained in Section 3 converged quickly.', note: 'This relative clause points at one particular, already-trained set, and that is what makes the reference specific. A relative clause does not do this on its own: "Networks that use attention scale well" stays generic and takes no article.' },
         { kind: 'example', good: 'We trained three networks. The networks differed only in depth.', note: 'Second mention.' },
       ],
     },
@@ -50,9 +50,9 @@ export const u001: Unit = {
       answers: [''],
       why: 'Generic uncountable noun: no article. Portuguese would use "a evidência", which is what pulls the article in.' },
     { kind: 'judge', id: 'u001.judge.04', phenomenon: 'zero-article',
-      sentence: 'The transformers have replaced recurrent models in most benchmarks.',
+      sentence: 'In general, the transformers have replaced recurrent models in most benchmarks.',
       correct: false,
-      why: 'Generic reference to a class of models takes no article: "Transformers have replaced...".' },
+      why: '"In general" signals a claim about the class as a whole, and English marks that with the bare plural: "transformers have replaced". "The transformers" can only mean one particular, already-identified set.' },
     { kind: 'judge', id: 'u001.judge.05', phenomenon: 'generic-reference',
       sentence: 'Rats show a startle response to sudden noise.',
       correct: true,
@@ -76,7 +76,7 @@ export const u001: Unit = {
       source: 'The convolutional networks are sensitive to input scale.',
       answers: ['Convolutional networks are sensitive to input scale.'],
       why: 'Drop the article to move from a specific set to the class as a whole.' },
-    { kind: 'errorHunt', id: 'u001.errorhunt.10', phenomenon: 'uncountable-nouns',
+    { kind: 'errorHunt', id: 'u001.error-hunt.10', phenomenon: 'uncountable-nouns',
       text: 'We reviewed the literatures on neonatal EEG before designing the protocol.',
       span: [16, 27],
       fix: 'literature',
