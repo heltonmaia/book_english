@@ -6,7 +6,9 @@
 
 **Architecture:** PWA estática sem backend. Conteúdo é dado TypeScript tipado compilado no bundle; um motor de funções puras (correção de resposta, agendamento FSRS, montagem de fila) fica isolado da UI; estado de estudo vive num store Zustand persistido em IndexedDB com fallback para memória. Toda a lógica testável é pura e fica fora dos componentes.
 
-**Tech Stack:** Vite 7 · React 19 · TypeScript 5.9 · Tailwind v4 (`@tailwindcss/vite`) · react-router-dom 7 · Zustand 5 · `ts-fsrs` · `idb` · `vite-plugin-pwa` · `@fontsource-variable/inter` · Vitest + @testing-library/react + jsdom
+**Tech Stack (versões realmente instaladas na Task 1):** Vite 8.2 · React 19.2 · TypeScript 7.0 · Tailwind 4.3 (`@tailwindcss/vite`) · react-router-dom 7.18 · Zustand 5.0 · `ts-fsrs` 5.4 · `idb` 8.0 · `vite-plugin-pwa` 1.3 · `@fontsource-variable/inter` 5.3 · Vitest 3.2 + @testing-library/react 16 + jsdom 27
+
+> **Nota de versão.** Este plano foi escrito assumindo Vite 7 e TypeScript 5.9. A instalação sem pin resolveu **TypeScript 7.0.2 e Vite 8.2.1** — majors mais novas. A Task 1 rodou verde de ponta a ponta com elas (typecheck, build, testes e deploy verificado no navegador real), então o projeto segue nelas e este documento foi corrigido para refletir a realidade. A consequência prática para as tasks seguintes é o formato do `tsconfig.json`: **TypeScript 7 não aceita mais `baseUrl`**, então `paths` é relativo ao próprio `tsconfig.json` (`"@/*": ["./src/*"]`), e `vite/client` entra em `types`. Use o `tsconfig.json` que está no repositório, não o texto literal de nenhum brief anterior a esta nota.
 
 **Spec:** `docs/superpowers/specs/2026-08-08-english-grammar-app-design.md`
 
@@ -86,7 +88,8 @@ Deploy vem **primeiro**, com um app trivial, porque o risco de `base` errado é 
 ```bash
 cd /home/heltonmaia/work/github-projects/book_english
 npm init -y
-npm pkg set name="book-english" version="0.1.0" private=true type="module"
+npm pkg set name="book-english" version="0.1.0" type="module"
+npm pkg set private=true --json   # sem --json, o npm grava a string "true"
 npm i react react-dom react-router-dom zustand ts-fsrs idb @fontsource-variable/inter
 npm i -D vite @vitejs/plugin-react typescript @types/react @types/react-dom \
         tailwindcss @tailwindcss/vite vite-plugin-pwa \
@@ -133,12 +136,14 @@ import '@testing-library/jest-dom/vitest'
     "module": "ESNext", "moduleResolution": "bundler",
     "jsx": "react-jsx", "strict": true, "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true, "noEmit": true, "skipLibCheck": true,
-    "types": ["vitest/globals", "@testing-library/jest-dom"],
-    "baseUrl": ".", "paths": { "@/*": ["src/*"] }
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
+    "paths": { "@/*": ["./src/*"] }
   },
   "include": ["src"]
 }
 ```
+
+Sem `baseUrl`: o TypeScript 7 removeu a opção, e por isso `paths` é relativo ao diretório do `tsconfig.json` (daí o `./`). `vite/client` em `types` traz as declarações de `import.meta.env` e dos imports de asset do Vite.
 
 `vite.config.ts` fica fora de `include` de propósito: ele não é typechecked pelo `tsc` do projeto, e o Vite o carrega com o próprio loader. Um `tsconfig.node.json` separado só para ele seria configuração morta.
 
@@ -2710,7 +2715,7 @@ import { UpdatePrompt } from './components/UpdatePrompt'
 Adicione os tipos do plugin ao `tsconfig.json`, em `compilerOptions.types`:
 
 ```json
-"types": ["vitest/globals", "@testing-library/jest-dom", "vite-plugin-pwa/react"]
+"types": ["vite/client", "vitest/globals", "@testing-library/jest-dom", "vite-plugin-pwa/react"]
 ```
 
 - [ ] **Step 4: Build e verificação do manifesto**
