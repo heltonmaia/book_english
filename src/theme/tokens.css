@@ -1,0 +1,10 @@
+:root {
+  --bg: #fbfaf8;        --surface: #ffffff;   --border: #e6e2dc;
+  --text: #1b1a18;      --muted: #6b6660;     --accent: #1f6f6b;
+  --ok: #17795e;        --bad: #b3261e;       --ok-bg: #e6f4ef;  --bad-bg: #fdeceb;
+}
+:root[data-theme='dark'] {
+  --bg: #17161a;        --surface: #201f24;   --border: #34323a;
+  --text: #ece9e4;      --muted: #a39e97;     --accent: #4fb3ad;
+  --ok: #5bc39c;        --bad: #ef8b84;       --ok-bg: #16302a;  --bad-bg: #33201f;
+}
