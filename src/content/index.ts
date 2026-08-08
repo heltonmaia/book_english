@@ -1,6 +1,7 @@
 import type { Item, ItemId, Unit } from './types'
+import { u001 } from './units/u001'
 
-export const UNITS: Unit[] = []
+export const UNITS: Unit[] = [u001]
 
 export function unitById(id: number): Unit | undefined {
   return UNITS.find((u) => u.id === id)
