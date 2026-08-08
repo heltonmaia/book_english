@@ -249,9 +249,12 @@ Confira: `grep -o '/book_english/[^"]*' dist/index.html` deve retornar ao menos 
 node_modules/
 dist/
 dev-dist/
+.superpowers/
 *.local
 .DS_Store
 ```
+
+`.superpowers/` guarda o scratch do processo de execução (ledger, briefs, pacotes de review). É rascunho, não fonte — nunca vai para o repositório.
 
 ```yaml
 # .github/workflows/deploy.yml
