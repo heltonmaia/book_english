@@ -5,6 +5,7 @@ export function normalizeAnswer(raw: string): string {
     .replace(/[“”"]/g, '"')
     .trim()
     .replace(/\.$/, '')
+    .trim() // a stripped period can leave edge whitespace behind ("evidence .")
     .replace(/\s+/g, ' ')
     .toLowerCase()
 }

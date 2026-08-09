@@ -16,6 +16,9 @@ describe('normalizeAnswer', () => {
   test('strips a single trailing period', () => {
     expect(normalizeAnswer('Networks are trained.')).toBe('networks are trained')
   })
+  test('strips whitespace left behind by a stripped trailing period', () => {
+    expect(normalizeAnswer('evidence .')).toBe('evidence')
+  })
 })
 
 describe('checkAnswer', () => {
