@@ -20,7 +20,9 @@ export type StoredCard = {
 
 const scheduler = fsrs(generatorParameters({ enable_fuzz: false }))
 
-const RATING: Record<Grade, Rating> = {
+// ts-fsrs's next() takes Grade = Exclude<Rating, Rating.Manual>; typing the
+// record that way keeps the call cast-free.
+const RATING: Record<Grade, Exclude<Rating, Rating.Manual>> = {
   again: Rating.Again,
   hard: Rating.Hard,
   good: Rating.Good,
@@ -63,6 +65,6 @@ export function newCard(itemId: ItemId, now: number): StoredCard {
 }
 
 export function gradeCard(card: StoredCard, grade: Grade, now: number): StoredCard {
-  const result = scheduler.next(toFsrs(card), new Date(now), RATING[grade] as any)
+  const result = scheduler.next(toFsrs(card), new Date(now), RATING[grade])
   return toStored(result.card, card.itemId, card.introducedAt)
 }
